@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - BookAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold" style="color:#1a1a2e;">
+        Hello {{ session['user_name'] }}! 👋
+    </h2>
+    <p class="text-muted">
+        Welcome to your personal book dashboard
+    </p>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center">
+                <h3 style="color:#6C63FF;">0</h3>
+                <p class="text-muted">Books Read</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center">
+                <h3 style="color:#6C63FF;">0</h3>
+                <p class="text-muted">Wishlist</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center">
+                <h3 style="color:#6C63FF;">0</h3>
+                <p class="text-muted">Ratings Given</p>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="/logout"
+           class="btn btn-outline-danger">
+            Logout
+        </a>
+    </div>
+</div>
+{% endblock %}

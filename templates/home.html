@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}BookAI - Smart Book Recommendations
+{% endblock %}
+
+{% block content %}
+
+<div style="background: linear-gradient(135deg, 
+            #1a1a2e, #16213e, #0f3460);
+            color: white; padding: 80px 0;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            📚 Discover Your Next Favourite Book
+        </h1>
+        <p class="lead mb-4" style="color: #ccc;">
+            AI powered personalized recommendations
+            based on your taste, mood and reading history
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/register"
+               class="btn btn-lg px-5 py-3 fw-bold"
+               style="background:#6C63FF; color:white;
+                      border-radius:50px;">
+                Get Started Free
+            </a>
+            <a href="/browse"
+               class="btn btn-lg btn-outline-light px-5 py-3"
+               style="border-radius:50px;">
+                Browse Books
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <h2 class="text-center fw-bold mb-5"
+        style="color:#1a1a2e;">
+        Why BookAI?
+    </h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">🤖</div>
+                <h5 class="fw-bold">AI Recommendations</h5>
+                <p class="text-muted">
+                    Hybrid ML model combining Content-Based
+                    and Collaborative Filtering for 85%
+                    accurate recommendations
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">😊</div>
+                <h5 class="fw-bold">Mood Based Filter</h5>
+                <p class="text-muted">
+                    Select your current mood and get
+                    book recommendations that perfectly
+                    match how you feel
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">📊</div>
+                <h5 class="fw-bold">Sentiment Analysis</h5>
+                <p class="text-muted">
+                    NLP analyzes thousands of reviews
+                    to predict your personal
+                    enjoyment score for each book
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">🎯</div>
+                <h5 class="fw-bold">Enjoyment Prediction</h5>
+                <p class="text-muted">
+                    Know how much you will enjoy a book
+                    before reading it with our
+                    AI prediction score
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">⚖️</div>
+                <h5 class="fw-bold">Book Comparison</h5>
+                <p class="text-muted">
+                    Compare two books side by side
+                    with ratings, sentiment and
+                    enjoyment scores
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div class="fs-1 mb-3">📈</div>
+                <h5 class="fw-bold">Reading Analytics</h5>
+                <p class="text-muted">
+                    Track your reading patterns,
+                    favourite genres and get
+                    personalized insights
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center py-5"
+     style="background:#f8fafc;">
+    <h3 class="fw-bold mb-3">
+        Ready to find your next great read?
+    </h3>
+    <a href="/register"
+       class="btn btn-lg px-5 py-3"
+       style="background:#6C63FF; color:white;
+              border-radius:50px;">
+        Start For Free
+    </a>
+</div>
+
+{% endblock %}

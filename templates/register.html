@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Register - BookAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm p-4">
+                <h3 class="fw-bold text-center mb-4"
+                    style="color:#1a1a2e;">
+                    Create Account 📚
+                </h3>
+                <form method="POST" action="/register">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Full Name
+                        </label>
+                        <input type="text"
+                               name="name"
+                               class="form-control"
+                               placeholder="Enter your name"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Email Address
+                        </label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Password
+                        </label>
+                        <input type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Create password"
+                               required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            Favourite Genre
+                        </label>
+                        <select name="genre"
+                                class="form-select">
+                            <option value="">
+                                Select genre
+                            </option>
+                            <option value="Fiction">
+                                Fiction
+                            </option>
+                            <option value="Mystery">
+                                Mystery
+                            </option>
+                            <option value="Science Fiction">
+                                Science Fiction
+                            </option>
+                            <option value="Romance">
+                                Romance
+                            </option>
+                            <option value="Biography">
+                                Biography
+                            </option>
+                            <option value="Self Help">
+                                Self Help
+                            </option>
+                            <option value="Fantasy">
+                                Fantasy
+                            </option>
+                            <option value="Thriller">
+                                Thriller
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                            class="btn w-100 py-2 fw-bold"
+                            style="background:#6C63FF;
+                                   color:white;">
+                        Create Account
+                    </button>
+                </form>
+                <p class="text-center mt-3 text-muted">
+                    Already have an account?
+                    <a href="/login"
+                       style="color:#6C63FF;">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
