@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Welcome to BookSense</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
+
+</head>
+
+<body>
+
+    <div class="onboarding-container">
+
+        {% if step == 1 %}
+
+        <!-- STEP LABEL -->
+        <div class="step-label">
+            Step 1 of 2
+        </div>
+
+        <!-- TITLE -->
+        <h1>
+            Help us personalise your recommendations
+        </h1>
+
+        <!-- SUBTITLE -->
+        <p class="subtitle">
+            Select at least 3 books you've enjoyed in the past
+            to help us understand your reading taste,
+            or skip for now to continue.
+        </p>
+
+
+        <!-- SEARCH -->
+        <form method="GET">
+
+            <div class="search-box">
+
+                <input type="text" name="search" placeholder="Search books..." value="{{ search }}">
+
+            </div>
+
+        </form>
+
+        <!-- FORM -->
+        <form method="POST" id="onboardingForm">
+
+            <!-- BOOKS -->
+            <div class="books-grid">
+
+                {% for book in books %}
+
+                <div class="book-card" data-book-id="{{ book.id }}">
+
+                    {% if book.cover_url %}
+
+                    <img src="{{ book.cover_url }}" alt="{{ book.title }}">
+
+                    {% else %}
+
+                    <div class="book-fallback">
+
+                        <div class="fallback-title">
+                            {{ book.title[:30] }}
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                    <h3>{{ book.title }}</h3>
+
+                    <p>{{ book.author }}</p>
+
+                    <!-- HIDDEN CHECKBOX -->
+                    <input type="checkbox" name="selected_books" value="{{ book.id }}" hidden>
+
+                    <button type="button" class="select-btn">
+                        Select
+                    </button>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="action-row">
+
+                <!-- SKIP -->
+                <a href="{{ url_for('onboarding.preferences') }}" class="skip-btn">
+                    Skip for now
+                </a>
+
+                <!-- CONTINUE -->
+                <button type="submit" class="continue-btn">
+                    Continue →
+                </button>
+
+            </div>
+
+        </form>
+
+        {% endif %}
+
+
+
+
+
+
+        {% if step == 2 %}
+
+        <!-- STEP 2 -->
+        <div class="step-label">
+            Step 2 of 2
+        </div>
+
+        <h1>
+            What kind of books do you enjoy?
+        </h1>
+
+        <p class="subtitle">
+            Choose your favorite reading moods
+        </p>
+        <p id="moodCounter">
+            Select 2 to 3 moods
+        </p>
+
+        <form method="POST" id="moodForm">
+
+            <div class="moods-grid">
+
+                {% for mood in moods %}
+
+                <label class="mood-pill">
+
+                    <input type="checkbox" name="moods" value="{{ mood }}">
+
+                    <span>{{ mood }}</span>
+
+                </label>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="action-row">
+
+                <button type="submit" class="continue-btn">
+                    Finish Setup →
+                </button>
+
+            </div>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/onboarding.js') }}">
+    </script>
+
+</body>
+
+</html>

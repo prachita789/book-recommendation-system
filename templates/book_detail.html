@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.clean_title }} - BookSense{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/book_detail.css') }}">
+
+<div class="detail-container">
+
+    <!-- BACK -->
+    <div class="back-row">
+        <a href="/browse">← Back to Browse</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="detail-grid">
+
+        <!-- LEFT: COVER -->
+        <div class="cover-section">
+
+            <div class="cover-box">
+
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" class="book-cover">
+                {% else %}
+
+                <div class="fallback-cover">
+
+                    <div class="fallback-content">
+
+                        <div class="fallback-title">
+                            {{ book.clean_title[:24] }}
+                        </div>
+
+                        <div class="fallback-author">
+                            {{ book.author[:20] }}
+                        </div>
+
+                    </div>
+
+                    {% if book.genre %}
+                    <div class="fallback-genre">
+                        {{ book.genre.split(',')[0] }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT: DETAILS -->
+        <div class="info-section">
+
+            <div class="genre-row">
+                {% if book.genre %}
+                <span class="genre-pill">
+                    {{ book.display_genre }}
+                </span>
+                {% endif %}
+            </div>
+
+            <h1 class="book-title">
+                {{ book.clean_title }}
+            </h1>
+
+            <p class="book-author">
+                {{ book.author }}
+            </p>
+
+            <!-- META -->
+            <div class="meta-row">
+
+                <div class="rating-box">
+                    ⭐ {{ "%.1f"|format(book.avg_rating or 0) }}
+                </div>
+
+                <div class="meta-light">
+                    {{ book.ratings_count or 0 }} ratings
+                </div>
+
+                {% if book.year %}
+                <div class="meta-light">
+                    • {{ book.year }}
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="desc-block">
+                <h4>About this book</h4>
+                <p>
+                    {{ book.description if book.description else "No description available." }}
+                </p>
+            </div>
+
+            <div class="book-extra-section">
+
+                <div class="details-layout">
+
+                    <!-- LEFT SIDE -->
+                    <div class="details-main">
+
+                        <!-- SENTIMENT -->
+                        <div class="sentiment-box mb-4">
+
+                            <h3 class="section-heading">
+                                Reader Sentiment
+                            </h3>
+
+                            <h4 class="sentiment-score">
+                                {{ sentiment_positive }}% Positive Reader Response
+                            </h4>
+
+                            <p class="sentiment-meta">
+                                {{ sentiment_negative }}% negative emotional tone detected
+                            </p>
+
+                        </div>
+
+                        <!-- INSIGHTS -->
+                        <div>
+
+                            <h3 class="section-heading mb-4">
+                                Recommendation Insights
+                            </h3>
+
+                            <div class="insights-grid">
+
+                                <div class="insight-card">
+
+                                    <div class="insight-icon">
+                                        ⭐
+                                    </div>
+
+                                    <p>
+                                        Highly rated by readers worldwide
+                                    </p>
+
+                                </div>
+
+                                <div class="insight-card">
+
+                                    <div class="insight-icon">
+                                        📈
+                                    </div>
+
+                                    <p>
+                                        Trending among active readers
+                                    </p>
+
+                                </div>
+
+                                <div class="insight-card">
+
+                                    <div class="insight-icon">
+                                        📚
+                                    </div>
+
+                                    <p>
+                                        Similar readers highly engaged
+                                        with this {{ book.genre }} title
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="details-sidebar">
+
+                        <div class="action-panel">
+
+                            <h3 class="action-title">
+                                Rate this book
+                            </h3>
+
+                            <p class="action-text">
+                                Help improve your future
+                                recommendations.
+                            </p>
+
+                            {% if session.get('user_id') %}
+
+                            <form method="POST" action="{{ url_for('books.rate_book', book_id=book.id) }}"
+                                class="rating-form">
+
+                                <input type="hidden" name="rating" id="selected-rating">
+
+                                <div class="interactive-stars">
+
+                                    {% for i in range(1, 6) %}
+
+                                    <span class="star" data-value="{{ i }}">
+                                        ☆
+                                    </span>
+
+                                    {% endfor %}
+
+                                </div>
+
+                                <button type="submit" class="submit-rating-btn">
+
+                                    Submit Rating
+
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            <a href="/login" class="btn btn-dark w-100 mb-3">
+
+                                Login to rate
+
+                            </a>
+
+                            {% endif %}
+
+                            <form method="POST" action="{{ url_for('wishlist.add_to_wishlist', book_id=book.id) }}">
+
+                                <button type="submit" class="wishlist-btn w-100">
+                                    ♡ Add to Wishlist
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <!-- SIMILAR -->
+
+    <div class="similar-section">
+
+        <h3>AI Recommendations</h3>
+
+        <div class="similar-grid">
+
+            {% for item in recommended_books %}
+
+            <a href="/book/{{ item.id }}" class="similar-card">
+
+                <div class="similar-img">
+
+                    {% if item.cover_url %}
+                    <img src="{{ item.cover_url }}">
+                    {% else %}
+                    <div class="mini-fallback">
+
+                        <div class="mini-title">
+                            {{ item.clean_title[:20] }}
+                        </div>
+
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="similar-info">
+
+                    <div class="similar-title">
+                        {{ item.clean_title[:40] }}
+                    </div>
+
+                    <div class="similar-author">
+                        {{ item.author[:28] }}
+                    </div>
+
+                    <div class="similar-rating">
+                        Match Score:
+                        {{ (item.score * 100)|round|int }}% Match
+                    </div>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+    <div class="similar-section">
+
+        <h3>Similar Books</h3>
+
+        <div class="similar-grid">
+
+            {% for item in similar_books %}
+            <a href="/book/{{ item.id }}" class="similar-card">
+
+                <div class="similar-img">
+                    {% if item.cover_url %}
+                    <img src="{{ item.cover_url }}">
+                    {% else %}
+                    <div class="mini-fallback">
+
+                        <div class="mini-title">
+                            {{ item.clean_title[:20] }}
+                        </div>
+
+                        <div class="mini-author">
+                            {{ item.author[:20] }}
+                        </div>
+
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="similar-info">
+                    <div class="similar-title">
+                        {{ item.clean_title[:40] }}
+                    </div>
+
+                    <div class="similar-author">
+                        {{ item.author[:30] }}
+                    </div>
+
+                    <div class="similar-rating">
+                        ⭐ {{ "%.1f"|format(item.avg_rating or 0) }}
+                    </div>
+                </div>
+
+            </a>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/book_detail.js') }}"></script>
+{% endblock %}

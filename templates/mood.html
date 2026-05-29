@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mood Picks - BookSense
+{% endblock %}
+
+{% block content %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/browse.css') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/mood.css') }}"
+>
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="mood-header">
+
+        <h1 class="fw-bold">
+            Mood-Based Recommendations
+        </h1>
+
+        <p class="text-muted">
+            Discover books based on your reading mood.
+        </p>
+
+    </div>
+
+    <!-- MOOD FILTERS -->
+    <div class="mood-filter-row">
+
+        {% for mood in moods %}
+
+        <a
+            href="?mood={{ mood }}"
+            class="
+                mood-pill
+                {% if selected_mood == mood.lower() %}
+                    active
+                {% endif %}
+            "
+        >
+
+            {{ mood.title() }}
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- BOOKS -->
+    {% if books %}
+
+    <div class="row g-4">
+
+        {% for book in books %}
+
+        <div class="col-6 col-md-4 col-lg-3">
+
+            <a
+                href="/book/{{ book.id }}"
+                class="text-decoration-none"
+            >
+
+                <div class="book-card">
+
+                    <div class="book-img-wrap">
+
+                        {% if book.cover_url %}
+
+                        <img
+                            src="{{ book.cover_url }}"
+                            class="book-cover"
+                        >
+
+                        {% else %}
+
+                        <div class="book-fallback">
+
+                            <div class="fallback-title">
+                                {{ book.clean_title[:28] }}
+                            </div>
+
+                            <div class="fallback-author">
+                                {{ book.author[:20] }}
+                            </div>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="book-content">
+
+                        <div class="book-title">
+                            {{ book.clean_title[:38] }}
+                        </div>
+
+                        <div class="book-author">
+                            {{ book.author[:28] }}
+                        </div>
+
+                        <div class="rating-pill">
+                            ⭐ {{ "%.1f"|format(book.avg_rating or 0) }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-mood-state">
+
+        <h3>
+            Select a mood to explore books
+        </h3>
+
+        <p>
+            Discover personalized reading experiences.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

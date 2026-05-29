@@ -1,122 +1,252 @@
 {% extends 'base.html' %}
-{% block title %}BookAI - Smart Book Recommendations
+{% block title %}BookSense - Smart Book Recommendations{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
-
 {% block content %}
 
-<div style="background: linear-gradient(135deg, 
-            #1a1a2e, #16213e, #0f3460);
-            color: white; padding: 80px 0;">
-    <div class="container text-center">
+<!-- HERO -->
+<section class="py-5" style="background:linear-gradient(135deg,#111827,#16213e,#0f3460); color:white;">
+
+    <div class="container py-5 text-center">
+
+        <span class="badge rounded-pill px-3 py-2 mb-4" style="background:rgba(255,255,255,.12);">
+            Personalized Book Discovery
+        </span>
+
         <h1 class="display-4 fw-bold mb-3">
-            📚 Discover Your Next Favourite Book
+            Find Books You'll Actually Enjoy
         </h1>
-        <p class="lead mb-4" style="color: #ccc;">
-            AI powered personalized recommendations
-            based on your taste, mood and reading history
+
+        <p class="lead mx-auto mb-4" style="max-width:760px; color:#d1d5db;">
+            BookSense uses ratings, preferences, mood, and intelligent
+            recommendations to help you discover your next favorite book faster.
         </p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="/register"
-               class="btn btn-lg px-5 py-3 fw-bold"
-               style="background:#6C63FF; color:white;
-                      border-radius:50px;">
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mb-4">
+
+            <a href="/register" class="btn btn-lg px-5 py-3 fw-bold"
+                style="background:#6C63FF; color:white; border-radius:50px;">
                 Get Started Free
             </a>
-            <a href="/browse"
-               class="btn btn-lg btn-outline-light px-5 py-3"
-               style="border-radius:50px;">
-                Browse Books
+
+            <a href="/browse" class="btn btn-lg btn-outline-light px-5 py-3" style="border-radius:50px;">
+                Browse Collection
             </a>
+
+        </div>
+
+        <small style="color:#9ca3af;">
+            Thousands of books · Smart recommendations · Built for modern readers
+        </small>
+
+    </div>
+</section>
+
+
+<section class="popular-section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <span class="section-tag">
+                CURATED FOR YOU
+            </span>
+
+            <h2>
+                Popular Picks
+            </h2>
+
+            <p>
+                Highly rated books readers love to revisit.
+            </p>
+
+        </div>
+
+        <div class="recommendation-wrapper">
+
+            <!-- LEFT -->
+            <button class="recommend-nav left" onclick="scrollShelf(-1)">
+
+                <i class="bi bi-arrow-left"></i>
+
+            </button>
+
+            <!-- CAROUSEL -->
+            <div class="recommendation-carousel" id="popularShelf">
+
+                {% for book in popular_books %}
+
+                <a href="/book/{{ book.id }}" class="recommend-card">
+
+                    <!-- COVER -->
+                    <div class="recommend-cover-wrap">
+
+                        {% if book.cover_url %}
+
+                        <img src="{{ book.cover_url }}" class="recommend-cover" alt="{{ book.clean_title }}">
+
+                        {% else %}
+
+                        <div class="recommend-fallback">
+                            {{ book.clean_title[:18] }}
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- CONTENT -->
+                    <div class="recommend-content">
+
+                        <span class="genre-pill">
+                            {{ book.display_genre }}
+                        </span>
+
+                        <h4>
+                            {{ book.clean_title[:42] }}
+                        </h4>
+
+                        <p class="recommend-author">
+                            {{ book.author[:40] }}
+                        </p>
+
+                        <div class="recommend-footer">
+
+                            <div class="recommend-rating">
+                                ⭐ {{ "%.1f"|format(book.avg_rating or 0) }}
+                                <span>
+                                    · {{ "{:,}".format(book.ratings_count or 0) }} ratings
+                                </span>
+                            </div>
+
+                            <span class="recommend-link">
+                                Details →
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- RIGHT -->
+            <button class="recommend-nav right" onclick="scrollShelf(1)">
+
+                <i class="bi bi-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- WHY SECTION -->
+<section class="py-5 bg-white">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">
+                Why Readers Choose BookSense
+            </h2>
+
+            <p class="text-muted fs-5">
+                Designed to remove guesswork from choosing what to read next.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+
+                    <small class="fw-bold text-primary mb-2">01</small>
+
+                    <h4 class="fw-bold mb-3">
+                        Personalized Recommendations
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Receive book suggestions based on your interests,
+                        favorite genres, and reading behavior.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+
+                    <small class="fw-bold text-primary mb-2">02</small>
+
+                    <h4 class="fw-bold mb-3">
+                        Mood-Based Discovery
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Choose how you feel today and explore books
+                        that match your mood and mindset.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+
+                    <small class="fw-bold text-primary mb-2">03</small>
+
+                    <h4 class="fw-bold mb-3">
+                        Smarter Book Decisions
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Use ratings, reviews, and insights before
+                        investing time in your next read.
+                    </p>
+
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
+</section>
 
-<div class="container py-5">
-    <h2 class="text-center fw-bold mb-5"
-        style="color:#1a1a2e;">
-        Why BookAI?
-    </h2>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">🤖</div>
-                <h5 class="fw-bold">AI Recommendations</h5>
-                <p class="text-muted">
-                    Hybrid ML model combining Content-Based
-                    and Collaborative Filtering for 85%
-                    accurate recommendations
-                </p>
-            </div>
+
+<!-- CTA -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="rounded-4 shadow-sm text-center p-5" style="background:linear-gradient(135deg,#eef2ff,#ffffff);">
+
+            <h2 class="fw-bold mb-3">
+                Stop Searching. Start Reading Smarter.
+            </h2>
+
+            <p class="text-muted mb-4 fs-5">
+                Join BookSense and discover books that fit your taste.
+            </p>
+
+            <a href="/register" class="btn btn-lg px-5 py-3 fw-bold"
+                style="background:#6C63FF; color:white; border-radius:50px;">
+                Create Free Account
+            </a>
+
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">😊</div>
-                <h5 class="fw-bold">Mood Based Filter</h5>
-                <p class="text-muted">
-                    Select your current mood and get
-                    book recommendations that perfectly
-                    match how you feel
-                </p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">📊</div>
-                <h5 class="fw-bold">Sentiment Analysis</h5>
-                <p class="text-muted">
-                    NLP analyzes thousands of reviews
-                    to predict your personal
-                    enjoyment score for each book
-                </p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">🎯</div>
-                <h5 class="fw-bold">Enjoyment Prediction</h5>
-                <p class="text-muted">
-                    Know how much you will enjoy a book
-                    before reading it with our
-                    AI prediction score
-                </p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">⚖️</div>
-                <h5 class="fw-bold">Book Comparison</h5>
-                <p class="text-muted">
-                    Compare two books side by side
-                    with ratings, sentiment and
-                    enjoyment scores
-                </p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="fs-1 mb-3">📈</div>
-                <h5 class="fw-bold">Reading Analytics</h5>
-                <p class="text-muted">
-                    Track your reading patterns,
-                    favourite genres and get
-                    personalized insights
-                </p>
-            </div>
-        </div>
+
     </div>
-</div>
+</section>
 
-<div class="text-center py-5"
-     style="background:#f8fafc;">
-    <h3 class="fw-bold mb-3">
-        Ready to find your next great read?
-    </h3>
-    <a href="/register"
-       class="btn btn-lg px-5 py-3"
-       style="background:#6C63FF; color:white;
-              border-radius:50px;">
-        Start For Free
-    </a>
-</div>
+{% endblock %}
 
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock %}

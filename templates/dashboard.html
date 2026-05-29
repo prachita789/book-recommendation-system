@@ -1,39 +1,185 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard - BookAI{% endblock %}
+
+{% block title %}
+Dashboard - BookSense
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/browse.css') }}">
+{% endblock %}
 
 {% block content %}
+
 <div class="container py-5">
-    <h2 class="fw-bold" style="color:#1a1a2e;">
-        Hello {{ session['user_name'] }}! 👋
-    </h2>
-    <p class="text-muted">
-        Welcome to your personal book dashboard
-    </p>
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-4 text-center">
-                <h3 style="color:#6C63FF;">0</h3>
-                <p class="text-muted">Books Read</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-4 text-center">
-                <h3 style="color:#6C63FF;">0</h3>
-                <p class="text-muted">Wishlist</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-4 text-center">
-                <h3 style="color:#6C63FF;">0</h3>
-                <p class="text-muted">Ratings Given</p>
-            </div>
-        </div>
+
+    <!-- HEADER -->
+    <div class="mb-5">
+
+        <h1 class="fw-bold">
+            Welcome back,
+            {{ session['user_name'] }} 👋
+        </h1>
+
+        <p class="text-muted">
+            Personalized insights and recommendations
+            based on your reading activity.
+        </p>
+
     </div>
-    <div class="mt-4">
-        <a href="/logout"
-           class="btn btn-outline-danger">
-            Logout
-        </a>
+
+    <!-- STATS -->
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4">
+            <div class="book-card text-center p-4">
+                <h2 class="fw-bold">{{ reading_count }}</h2>
+                <p class="text-muted mb-0">Books Explored</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="book-card text-center p-4">
+                <h2 class="fw-bold">{{ wishlist_count }}</h2>
+                <p class="text-muted mb-0">Wishlist Books</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="book-card text-center p-4">
+                <h2 class="fw-bold">{{ ratings_count }}</h2>
+                <p class="text-muted mb-0">Ratings Given</p>
+            </div>
+        </div>
+
     </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div>
+
+        <h3 class="fw-bold mb-4">
+            Personalized Recommendations
+        </h3>
+
+        <div class="row g-4">
+
+            {% for book in recommended_books %}
+
+            <div class="col-6 col-md-4 col-lg-3">
+
+                <a href="/book/{{ book.id }}" class="text-decoration-none">
+
+                    <div class="book-card">
+
+                        <div class="book-img-wrap">
+
+                            {% if book.cover_url %}
+                            <img src="{{ book.cover_url }}" class="book-cover">
+                            {% else %}
+                            <div class="book-fallback">
+                                <div class="fallback-title">
+                                    {{ book.clean_title[:28] }}
+                                </div>
+                                <div class="fallback-author">
+                                    {{ book.author[:22] }}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="book-content">
+
+                            <div class="book-title">
+                                {{ book.clean_title[:40] }}
+                            </div>
+
+                            <div class="book-author">
+                                {{ book.author[:30] }}
+                            </div>
+
+                            {% if book.mood_tag %}
+                            <span class="genre-pill">
+                                {{ book.mood_tag }}
+                            </span>
+                            {% endif %}
+
+                            <div class="rating-pill">
+                                ⭐ {{ book.display_rating }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- RECENTLY VIEWED -->
+    {% if recently_viewed %}
+
+    <div class="mt-5">
+
+        <h3 class="fw-bold mb-4">
+            Recently Explored
+        </h3>
+
+        <div class="row g-4">
+
+            {% for book in recently_viewed %}
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="/book/{{ book.id }}" class="text-decoration-none">
+
+                    <div class="book-card">
+
+                        <div class="book-img-wrap">
+
+                            {% if book.cover_url %}
+                            <img src="{{ book.cover_url }}" class="book-cover">
+                            {% else %}
+                            <div class="book-fallback">
+                                <div class="fallback-title">
+                                    {{ book.clean_title[:20] }}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="book-content">
+
+                            <div class="book-title">
+                                {{ book.clean_title[:30] }}
+                            </div>
+
+                            <div class="rating-pill">
+                                ⭐ {{ book.display_rating }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
 </div>
+
 {% endblock %}

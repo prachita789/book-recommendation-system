@@ -1,84 +1,138 @@
 import pandas as pd
 import mysql.connector
+from ast import literal_eval
 
+
+def clean_text(value, max_len=None, default=''):
+    if pd.isna(value):
+        value = default
+    value = str(value).strip()
+    if value.lower() == 'nan':
+        value = default
+    if max_len:
+        value = value[:max_len]
+    return value
+
+
+# Database connection
 conn = mysql.connector.connect(
     host='127.0.0.1',
     user='root',
     password='myNewpass@26',
     database='book_recommendation_db'
 )
+
 cursor = conn.cursor()
-print("Connected to database successfully!")
+print("Connected!")
 
-print("Loading CSV file...")
-books_df = pd.read_csv(
-    'dataset/Books.csv',
-    encoding='latin-1',
-    on_bad_lines='skip',
-    sep=',',
-    quotechar='"'
-)
+# Load CSV
+books_df = pd.read_csv('dataset/books_enriched.csv')
+# books_df = books_df.head(5000)
 
-print(f"Total books found: {len(books_df)}")
-print("Columns:", books_df.columns.tolist())
-print(books_df.head(2))
+print(f"Total books to import: {len(books_df)}")
 
-# Clean column names
-books_df.columns = books_df.columns.str.strip()
-
-# Rename columns
-books_df = books_df.rename(columns={
-    'ISBN': 'isbn',
-    'Book-Title': 'title',
-    'Book-Author': 'author',
-    'Year-Of-Publication': 'year',
-    'Publisher': 'publisher',
-    'Image-URL-M': 'cover_url'
-})
-
-print("Renamed columns:", books_df.columns.tolist())
-
-# Add cover_url if missing
-if 'cover_url' not in books_df.columns:
-    books_df['cover_url'] = ''
-
-# Clean data
-books_df['title'] = books_df['title'].fillna('Unknown Title').astype(str)
-books_df['author'] = books_df['author'].fillna('Unknown Author').astype(str)
-books_df['publisher'] = books_df['publisher'].fillna('Unknown').astype(str)
-books_df['cover_url'] = books_df['cover_url'].fillna('').astype(str)
+# Fill missing text columns
+books_df['title'] = books_df['title'].fillna('Unknown').astype(str)
+books_df['authors'] = books_df['authors'].fillna('Unknown').astype(str)
+books_df['description'] = books_df['description'].fillna('').astype(str)
+books_df['image_url'] = books_df['image_url'].fillna('').astype(str)
 books_df['isbn'] = books_df['isbn'].fillna('').astype(str)
 
-# Insert into MySQL
-print("\nInserting books into database...")
+
+# Convert genres
+def get_genre(genres):
+    try:
+        if isinstance(genres, str):
+            g = literal_eval(genres)
+            return ', '.join(g[:3]) if g else ''
+        return ''
+    except:
+        return ''
+
+
+books_df['genre_str'] = books_df['genres'].apply(get_genre)
+
 
 insert_query = """
-    INSERT IGNORE INTO books
-    (isbn, title, author, year, publisher, cover_url)
-    VALUES (%s, %s, %s, %s, %s, %s)
+INSERT IGNORE INTO books (
+    isbn, title, author, year, publisher,
+    cover_url, description, genre,
+    pages, avg_rating, ratings_count,
+    goodreads_id, best_book_id
+)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
+batch = []
+batch_size = 500
 success = 0
 errors = 0
-batch = []
-batch_size = 1000
 
 for index, row in books_df.iterrows():
     try:
-        isbn = str(row['isbn']).strip()[:20] if str(row['isbn']) != 'nan' else ''
-        title = str(row['title']).strip()[:200] if str(row['title']) != 'nan' else 'Unknown Title'
-        author = str(row['author']).strip()[:100] if str(row['author']) != 'nan' else 'Unknown Author'
-        publisher = str(row['publisher']).strip()[:100] if str(row['publisher']) != 'nan' else 'Unknown'
-        cover_url = str(row['cover_url']).strip()[:500] if str(row['cover_url']) != 'nan' else ''
+        isbn = clean_text(row.get('isbn'), 20)
+        title = clean_text(row.get('title'), 200, 'Unknown')
+        author = clean_text(row.get('authors'), 100, 'Unknown')
+        cover_url = clean_text(row.get('image_url'), 500)
+        description = clean_text(row.get('description'), 5000)
+        genre = clean_text(row.get('genre_str'), 500)
 
-        try:
-            year = int(float(row['year'])) if str(row['year']) != 'nan' else None
-            if year and not (1800 <= year <= 2026):
+        # Pages
+        pages = None
+        if pd.notna(row.get('pages')):
+            try:
+                pages = int(float(row.get('pages')))
+            except:
+                pages = None
+
+        # Ratings count
+        ratings_count = 0
+        if pd.notna(row.get('ratings_count')):
+            try:
+                ratings_count = int(float(row.get('ratings_count')))
+            except:
+                ratings_count = 0
+
+        # Average rating
+        avg_rating = 0.0
+        if pd.notna(row.get('average_rating')):
+            try:
+                avg_rating = float(row.get('average_rating'))
+            except:
+                avg_rating = 0.0
+
+        # Year
+        year = None
+        if pd.notna(row.get('publishDate')):
+            try:
+                year_str = str(row.get('publishDate')).split('/')[-1]
+                year = int(float(year_str))
+                if year < 1800 or year > 2026:
+                    year = None
+            except:
                 year = None
-        except:
-            year = None
 
-        batch.append((isbn, title, author, year, publisher, cover_url))
+        # Goodreads IDs
+        goodreads_id = None
+        if pd.notna(row.get('book_id')):
+            try:
+                goodreads_id = int(row.get('book_id'))
+            except:
+                goodreads_id = None
+
+        best_book_id = None
+        if pd.notna(row.get('best_book_id')):
+            try:
+                best_book_id = int(row.get('best_book_id'))
+            except:
+                best_book_id = None
+
+        batch.append((
+            isbn, title, author, year, None,
+            cover_url, description, genre,
+            pages, avg_rating, ratings_count,
+            goodreads_id, best_book_id
+        ))
 
         if len(batch) >= batch_size:
             cursor.executemany(insert_query, batch)
@@ -89,6 +143,7 @@ for index, row in books_df.iterrows():
 
     except Exception as e:
         errors += 1
+        print(f"Error row {index}: {e}")
 
 # Insert remaining
 if batch:
@@ -96,9 +151,9 @@ if batch:
     conn.commit()
     success += len(batch)
 
-print(f"\n✅ Done!")
-print(f"Successfully inserted: {success} books")
-print(f"Errors skipped: {errors}")
+print("\n✅ Import complete!")
+print(f"Inserted: {success}")
+print(f"Errors: {errors}")
 
 cursor.close()
 conn.close()

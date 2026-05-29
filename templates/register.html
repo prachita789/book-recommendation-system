@@ -1,97 +1,131 @@
 {% extends 'base.html' %}
-{% block title %}Register - BookAI{% endblock %}
+
+{% block title %}Register - BookSense{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card border-0 shadow-sm p-4">
-                <h3 class="fw-bold text-center mb-4"
-                    style="color:#1a1a2e;">
-                    Create Account 📚
-                </h3>
-                <form method="POST" action="/register">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            Full Name
-                        </label>
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               placeholder="Enter your name"
-                               required>
+
+<div class="auth-wrapper">
+
+    <div class="container-fluid">
+
+        <div class="row min-vh-100">
+
+            <!-- LEFT -->
+            <div class="col-lg-6 auth-left d-none d-lg-flex">
+
+                <div class="auth-left-content">
+
+                    <div class="brand-badge">
+                        BookSense AI
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            Email Address
-                        </label>
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="Enter your email"
-                               required>
+
+                    <h1>
+                        Discover books
+                        you'll actually love.
+                    </h1>
+
+                    <p>
+                        Personalized recommendations powered
+                        by hybrid machine learning and NLP.
+                    </p>
+
+                    <div class="feature-list">
+
+                        <div class="feature-item">
+                            📚 Smart recommendations
+                        </div>
+
+                        <div class="feature-item">
+                            🎯 Mood-based discovery
+                        </div>
+
+                        <div class="feature-item">
+                            🤖 AI-powered insights
+                        </div>
+
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            Password
-                        </label>
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Create password"
-                               required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            Favourite Genre
-                        </label>
-                        <select name="genre"
-                                class="form-select">
-                            <option value="">
-                                Select genre
-                            </option>
-                            <option value="Fiction">
-                                Fiction
-                            </option>
-                            <option value="Mystery">
-                                Mystery
-                            </option>
-                            <option value="Science Fiction">
-                                Science Fiction
-                            </option>
-                            <option value="Romance">
-                                Romance
-                            </option>
-                            <option value="Biography">
-                                Biography
-                            </option>
-                            <option value="Self Help">
-                                Self Help
-                            </option>
-                            <option value="Fantasy">
-                                Fantasy
-                            </option>
-                            <option value="Thriller">
-                                Thriller
-                            </option>
-                        </select>
-                    </div>
-                    <button type="submit"
-                            class="btn w-100 py-2 fw-bold"
-                            style="background:#6C63FF;
-                                   color:white;">
-                        Create Account
-                    </button>
-                </form>
-                <p class="text-center mt-3 text-muted">
-                    Already have an account?
-                    <a href="/login"
-                       style="color:#6C63FF;">
-                        Login here
-                    </a>
-                </p>
+
+                </div>
+
             </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-6 auth-right">
+
+                <div class="auth-card">
+
+                    <h2>Create account</h2>
+
+                    <p class="auth-subtitle">
+                        Start your personalized reading journey.
+                    </p>
+
+                    <form method="POST" action="/register">
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Full Name
+                            </label>
+
+                            <input type="text"
+                                   name="name"
+                                   class="form-control auth-input"
+                                   placeholder="Enter your name"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   name="email"
+                                   class="form-control auth-input"
+                                   placeholder="Enter your email"
+                                   required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control auth-input"
+                                   placeholder="Create password"
+                                   required>
+                        </div>
+
+                        <button type="submit"
+                                class="btn auth-btn w-100">
+                            Create Account
+                        </button>
+
+                    </form>
+
+                    <p class="auth-switch">
+                        Already have an account?
+
+                        <a href="/login">
+                            Login
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}

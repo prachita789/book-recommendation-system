@@ -1,2 +1,2 @@
 // Main JavaScript file
-console.log('BookAI loaded successfully!');
+console.log('BookSense loaded successfully!');

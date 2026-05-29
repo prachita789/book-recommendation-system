@@ -1,52 +1,135 @@
 {% extends 'base.html' %}
-{% block title %}Login - BookAI{% endblock %}
+
+{% block title %}Login - BookSense{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card border-0 shadow-sm p-4">
-                <h3 class="fw-bold text-center mb-4"
-                    style="color:#1a1a2e;">
-                    Welcome Back 📚
-                </h3>
-                <form method="POST" action="/login">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            Email Address
-                        </label>
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="Enter your email"
-                               required>
+
+<div class="login-wrapper">
+
+    <div class="container-fluid">
+
+        <div class="row min-vh-100">
+
+            <!-- LEFT PANEL -->
+            <div class="col-lg-6 login-left d-none d-lg-flex">
+
+                <div class="login-left-content">
+
+                    <div class="brand-badge">
+                        BookSense AI
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            Password
-                        </label>
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Enter your password"
-                               required>
+
+                    <h1>
+                        Continue your
+                        reading journey.
+                    </h1>
+
+                    <p>
+                        Discover personalized recommendations,
+                        track your reading history,
+                        and explore books you'll love.
+                    </p>
+
+                    <div class="feature-list">
+
+                        <div class="feature-item">
+                            📚 Personalized recommendations
+                        </div>
+
+                        <div class="feature-item">
+                            ⭐ Track ratings & reviews
+                        </div>
+
+                        <div class="feature-item">
+                            🎯 Discover books by mood
+                        </div>
+
                     </div>
-                    <button type="submit"
-                            class="btn w-100 py-2 fw-bold"
-                            style="background:#6C63FF;
-                                   color:white;">
-                        Login
-                    </button>
-                </form>
-                <p class="text-center mt-3 text-muted">
-                    Don't have an account?
-                    <a href="/register"
-                       style="color:#6C63FF;">
-                        Register here
-                    </a>
-                </p>
+
+                </div>
+
             </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="col-lg-6 login-right">
+
+                <div class="login-card">
+
+                    <h2>
+                        Welcome back
+                    </h2>
+
+                    <p class="login-subtitle">
+                        Login to continue exploring BookSense.
+                    </p>
+
+                    <form method="POST"
+                          action="/login">
+
+                        <!-- EMAIL -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   name="email"
+                                   class="form-control login-input"
+                                   placeholder="Enter your email"
+                                   required>
+
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control login-input"
+                                   placeholder="Enter your password"
+                                   required>
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <button type="submit"
+                                class="btn login-btn w-100">
+
+                            Login
+
+                        </button>
+
+                    </form>
+
+                    <!-- SWITCH -->
+                    <p class="login-switch">
+
+                        Don’t have an account?
+
+                        <a href="/register">
+                            Create one
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}
